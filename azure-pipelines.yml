@@ -1,0 +1,24 @@
+trigger: none
+
+name: Deploy Bicep files
+
+variables:
+  vmImageName: 'ubuntu-latest'
+
+  azureServiceConnection: 'myServiceConnectionName'
+  templateFile: 'kv-bicep-override/kv.bicep'
+  parameterFile: 'kv-bicep-override/params.dev.json'
+  rgName: 'kv-test-rg'
+  location: 'westeurope'
+pool:
+  vmImage: $(vmImageName)
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: $(azureServiceConnection)
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      secretNames=$(az deployment group show -g $(rgName) -n kvDeployment --query properties.outputs.secrets) || secretNames='{ "type": "Array", "value": []}'
+      az deployment group create -g $(rgName) --name kvDeployment --template-file $(templateFile) --parameters secretNamesInput="$secretNames" params=@$(parameterFile)
