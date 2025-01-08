@@ -3,7 +3,7 @@ All secrets should be created through bicep deployment with dummy values.
 After successfull deployment the dummy values are manually updated to reflect the actual values.
 
 # Problem
-After manually updating the secret values from <dummy> to <actualValue>, subsequent bicep deployments will overwrite the value back to <dummy>.
+After manually updating the secret values from `<dummy>` to `<actualValue>`, subsequent bicep deployments will overwrite the value back to `<dummy>`.
 
 # Solution
 - The deployment checks with a CLI command wheter there are deployment outputs from a previous deployment. At initial state, that will be false and therefore a
